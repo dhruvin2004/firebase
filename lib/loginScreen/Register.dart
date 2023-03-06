@@ -14,6 +14,9 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
+  TextEditingController rpassword = TextEditingController();
+  TextEditingController remail = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 onTap: () {
                   FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
-                          email: remail.text, password: rpassword.text)
-                      .whenComplete(
-                        () => Navigator.pushReplacementNamed(context, 'home'),
-                      );
+                          email: remail.text, password: rpassword.text);
                   remail.clear();
                   rpassword.clear();
                 }),
@@ -59,9 +59,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 Text("You are already member?",style: TextStyle(fontWeight: FontWeight.bold),),
                 TextButton(onPressed: (){
                   setState(() {
-                    Navigator.pushReplacementNamed(context, '/');
+                    Navigator.pushReplacementNamed(context, 'login');
                   });
-                }, child: Text("Sign In"))
+                }, child: Text("Sign In"),),
               ],
             ),
           ],
