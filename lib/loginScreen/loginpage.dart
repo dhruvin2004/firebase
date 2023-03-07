@@ -1,4 +1,3 @@
-import 'package:firebase/AppString.dart';
 import 'package:firebase/widget/myButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Column(
               children: [
+                Icon(Icons.android,size: 180,),
                 MyTextField(controller: lemail, hintText: 'Email',obscureText: false),
                 SizedBox(height: 20,),
                 MyTextField(controller: lpassword, hintText: 'Password',obscureText: false),
