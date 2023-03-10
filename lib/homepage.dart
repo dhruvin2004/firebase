@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/CRUD.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,20 +16,31 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            children: [
+              MaterialButton(onPressed: () {},
+                color: Colors.deepPurpleAccent.shade100,
+                child: const Text("Insert"),)
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
-        title: Text("Home Page"),
+        title: const Text("Home Page"),
         actions: [
           GestureDetector(
             onTap: () async {
               await FirebaseAuth.instance.signOut().whenComplete(
-                      () => Navigator.pushReplacementNamed(context, '/'));
+                    () => Navigator.pushReplacementNamed(context, '/'),);
             },
-            child: Icon(
+            child: const Icon(
               Icons.logout,
               color: Colors.white,
             ),
           ),
-          SizedBox(
+           const SizedBox(
             width: 10,
           ),
         ],
@@ -36,17 +48,18 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          Text("This is a method we can access  collection"),
+          const Text("This is a method we can access  collection"),
           Expanded(
             flex: 1,
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('user').snapshots(),
+                stream: FirebaseFirestore.instance.collection('user')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('Something went wrong');
+                    return const Text('Something went wrong');
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
+                    return Center(child: Container(height: 100,width: 100,alignment: Alignment.center,child: const CircularProgressIndicator()));
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -55,7 +68,11 @@ class _HomePageState extends State<HomePage> {
                       return ListTile(
                         leading: CircleAvatar(child: Text("${index + 1}"),),
                         title: Text("${data['name']}"),
-                        subtitle: Text("${data['age']}"),
+                        subtitle: Text("Age : ${data['age']}"),
+                        trailing: MaterialButton(color: Colors.purpleAccent.shade100,onPressed: () {
+                          DatabaseHelper.instance.updateData(index: index);
+                        },
+                        child: Text("Edit"),),
 
                       );
                     },
@@ -64,34 +81,35 @@ class _HomePageState extends State<HomePage> {
                 }),
           ),
 
-          Text("This is a method we can access a sub class of collection"),
-          Expanded(
-            flex: 1,
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('user').doc('CJ64rTiP7YsqQuUjPwnI').collection('sub_data').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Something went wrong');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
-                  }
-                  
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      var data = snapshot.data!.docs[index];
-                      return ListTile(
-                        leading: CircleAvatar(child: Text("${index + 1}"),),
-                        title: Text("${data['name']}  ${data['surname']}"),
-                        subtitle: Text("${data['age']}"),
-
-                      );
-                    },
-
-                  );
-                }),
-          ),
+          // Text("This is a method we can access a sub class of collection"),
+          // Expanded(
+          //   flex: 1,
+          //   child: StreamBuilder(
+          //       stream: FirebaseFirestore.instance.collection('user').doc(
+          //           'CJ64rTiP7YsqQuUjPwnI').collection('sub_data').snapshots(),
+          //       builder: (context, snapshot) {
+          //         if (snapshot.hasError) {
+          //           return Text('Something went wrong');
+          //         }
+          //         if (snapshot.connectionState == ConnectionState.waiting) {
+          //           return Center(child: Container(height: 100,width: 100,alignment: Alignment.center,child: CircularProgressIndicator()));
+          //         }
+          //
+          //         return ListView.builder(
+          //           itemCount: snapshot.data!.docs.length,
+          //           itemBuilder: (context, index) {
+          //             var data = snapshot.data!.docs[index];
+          //             return ListTile(
+          //               leading: CircleAvatar(child: Text("${index + 1}"),),
+          //               title: Text("${data['name']}  ${data['surname']}"),
+          //               subtitle: Text("${data['age']}"),
+          //
+          //             );
+          //           },
+          //
+          //         );
+          //       }),
+          // ),
         ],
       ),
     );
