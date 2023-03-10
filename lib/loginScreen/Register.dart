@@ -1,4 +1,4 @@
-import 'package:firebase/AppString.dart';
+
 import 'package:firebase/widget/myButton.dart';
 import 'package:firebase/widget/mytextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';

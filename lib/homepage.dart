@@ -69,10 +69,22 @@ class _HomePageState extends State<HomePage> {
                         leading: CircleAvatar(child: Text("${index + 1}"),),
                         title: Text("${data['name']}"),
                         subtitle: Text("Age : ${data['age']}"),
-                        trailing: MaterialButton(color: Colors.purpleAccent.shade100,onPressed: () {
-                          DatabaseHelper.instance.updateData(index: index);
-                        },
-                        child: Text("Edit"),),
+                        trailing:
+                        Container(
+                          height: 50,
+                          width: 100,
+                          child: Row(
+                            children: [
+                              IconButton(onPressed: (){
+                                DatabaseHelper.instance.updateData(index: index);
+                              }, icon: Icon(Icons.edit,color: Colors.green,)),
+
+                              IconButton(onPressed: (){
+                                DatabaseHelper.instance.deleteData(index: index);
+                              }, icon: Icon(Icons.delete,color: Colors.red,))
+                            ],
+                          ),
+                        ),
 
                       );
                     },
@@ -80,6 +92,10 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
           ),
+          
+          MaterialButton(onPressed: (){
+            DatabaseHelper.instance.insertData();
+          },child: Text("insert"),color: Colors.purpleAccent.shade100,)
 
           // Text("This is a method we can access a sub class of collection"),
           // Expanded(
