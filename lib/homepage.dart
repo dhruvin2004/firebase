@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/CRUD.dart';
+import 'package:firebase/widget/mytextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -19,28 +20,26 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: SafeArea(
           child: Column(
-            children: [
-              MaterialButton(onPressed: () {},
-                color: Colors.deepPurpleAccent.shade100,
-                child: const Text("Insert"),)
-            ],
+            children: [],
           ),
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text("Home Page"),
         actions: [
           GestureDetector(
             onTap: () async {
               await FirebaseAuth.instance.signOut().whenComplete(
-                    () => Navigator.pushReplacementNamed(context, '/'),);
+                    () => Navigator.pushReplacementNamed(context, '/'),
+                  );
             },
             child: const Icon(
               Icons.logout,
               color: Colors.white,
             ),
           ),
-           const SizedBox(
+          const SizedBox(
             width: 10,
           ),
         ],
@@ -49,53 +48,93 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           const Text("This is a method we can access  collection"),
+          SizedBox(
+            height: 5,
+          ),
+          MyTextField(
+              controller: DatabaseHelper.instance.name,
+              hintText: "name",
+              obscureText: false),
+          SizedBox(
+            height: 5,
+          ),
+          MyTextField(
+              controller: DatabaseHelper.instance.age,
+              hintText: "Age",
+              obscureText: false),
+          SizedBox(
+            height: 5,
+          ),
           Expanded(
             flex: 1,
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('user')
-                    .snapshots(),
+                stream:
+                    FirebaseFirestore.instance.collection('user').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Text('Something went wrong');
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: Container(height: 100,width: 100,alignment: Alignment.center,child: const CircularProgressIndicator()));
+                    return Center(
+                        child: Container(
+                            height: 100,
+                            width: 100,
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator()));
                   }
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       var data = snapshot.data!.docs[index];
                       return ListTile(
-                        leading: CircleAvatar(child: Text("${index + 1}"),),
+                        leading: CircleAvatar(
+                          child: Text("${index + 1}"),
+                          backgroundColor: Colors.black,
+                        ),
                         title: Text("${data['name']}"),
                         subtitle: Text("Age : ${data['age']}"),
-                        trailing:
-                        Container(
+                        trailing: Container(
                           height: 50,
                           width: 100,
                           child: Row(
                             children: [
-                              IconButton(onPressed: (){
-                                DatabaseHelper.instance.updateData(index: index);
-                              }, icon: Icon(Icons.edit,color: Colors.green,)),
-
-                              IconButton(onPressed: (){
-                                DatabaseHelper.instance.deleteData(index: index);
-                              }, icon: Icon(Icons.delete,color: Colors.red,))
+                              IconButton(
+                                  onPressed: () {
+                                    DatabaseHelper.instance
+                                        .updateData(index: index);
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.green,
+                                  )),
+                              IconButton(
+                                onPressed: () {
+                                  DatabaseHelper.instance
+                                      .deleteData(index: index);
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              )
                             ],
                           ),
                         ),
-
                       );
                     },
-
                   );
                 }),
           ),
-          
-          MaterialButton(onPressed: (){
-            DatabaseHelper.instance.insertData();
-          },child: Text("insert"),color: Colors.purpleAccent.shade100,)
+
+          MaterialButton(
+            onPressed: () {
+              DatabaseHelper.instance.insertData();
+              DatabaseHelper.instance.name.clear();
+              DatabaseHelper.instance.age.clear();
+            },
+            child: Text("insert"),
+            color: Colors.purpleAccent.shade100,
+          )
 
           // Text("This is a method we can access a sub class of collection"),
           // Expanded(
